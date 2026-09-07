@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HydroTech Africa | Saisie de Relevé</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap"
+    rel="stylesheet" />
+
+
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root {
+      --navy: #0d2d6b;
+      --navy-dark: #071a42;
+      --navy-mid: #1a3f7a;
+      --blue-accent: #0d53c6;
+      --blue-light: #eff6ff;
+      --border: #e2e8f0;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --white: #ffffff;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--navy);
+      text-decoration: none;
+    }
+
+    .brand-droplet {
+      width: 24px;
+      height: 24px;
+      fill: var(--blue-accent);
+    }
+
+    .navbar-nav {
+      display: flex;
+      gap: 28px;
+      height: 100%;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      position: relative;
+      height: 100%;
+    }
+
+    .nav-link.active {
+      color: var(--blue-accent);
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: var(--blue-accent);
+      border-radius: 3px 3px 0 0;
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .icon-btn:hover {
+      background-color: #f1f5f9;
+      color: var(--text-dark);
+    }
+
+    .icon-btn .dot {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 8px;
+      height: 8px;
+      background-color: #ef4444;
+      border-radius: 50%;
+    }
+
+    .profile-img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+
+    /* Main Layout */
+    .main-container {
+      display: flex;
+      flex: 1;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background-color: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-header {
+      padding: 0 12px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .sidebar-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .sidebar-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: var(--transition);
+    }
+
+    .sidebar-link:hover {
+      background-color: #f1f5f9;
+      color: var(--text-dark);
+    }
+
+    .sidebar-link.active {
+      background-color: var(--blue-accent);
+      color: var(--white);
+    }
+
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      padding: 32px 40px;
+      overflow-y: auto;
+    }
+
+    .page-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    .page-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--navy);
+      text-transform: uppercase;
+    }
+
+    .page-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .session-info {
+      text-align: right;
+    }
+
+    .session-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--blue-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .session-val {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-top: 2px;
+    }
+
+    /* Grid Layout */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 28px;
+    }
+
+    .layout-left,
+    .layout-right {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-heading {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-badge {
+      background-color: #f1f5f9;
+      color: #475569;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      letter-spacing: 0.03em;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      outline: none;
+      box-sizing: border-box;
+      background-color: var(--white);
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      border-color: var(--blue-accent);
+      box-shadow: 0 0 0 3px rgba(13, 83, 198, 0.15);
+    }
+
+    .form-input[readonly] {
+      background-color: #f8fafc;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    /* Form Details Layout */
+    .details-row-container {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    .inputs-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .results-col {
+      background-color: var(--blue-light);
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
+
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .metric-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #1e40af;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #1d4ed8;
+    }
+
+    /* Buttons */
+    .actions-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+      box-sizing: border-box;
+    }
+
+    .btn-valider {
+      background-color: var(--blue-accent);
+      color: var(--white);
+      border: none;
+      flex: 1.3;
+      box-shadow: 0 4px 12px rgba(13, 83, 198, 0.25);
+    }
+
+    .btn-valider:hover:not(:disabled) {
+      background-color: #0b45a4;
+      transform: translateY(-1px);
+    }
+
+
+
+    .btn-reset {
+      background-color: #e2e8f0;
+      color: #475569;
+      border: none;
+      flex: 0.7;
+    }
+
+    .btn-reset:hover {
+      background-color: #cbd5e1;
+    }
+
+    /* Autocomplete dropdown */
+    .dropdown-liste {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: var(--white);
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius);
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 1000;
+      margin-top: 4px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.9rem;
+      transition: background-color 0.15s;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f8fafc;
+    }
+
+    .dropdown-item b {
+      color: var(--navy);
+    }
+
+    /* Selected Profile block */
+    .profile-card-flex {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background-color: var(--blue-light);
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+    }
+
+    .profile-avatar-circle {
+      background-color: var(--blue-accent);
+      color: var(--white);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .profile-info-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: #1e3a8a;
+      font-size: 1.05rem;
+    }
+
+    .profile-info-meta {
+      font-size: 0.75rem;
+      color: #1d4ed8;
+      margin-top: 2px;
+    }
+
+    /* Activities list */
+    .activities-list-container {
+      display: flex;
+      flex-direction: column;
+      margin-top: 8px;
+    }
+
+    .activity-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .activity-row:last-child {
+      border-bottom: none;
+    }
+
+    .activity-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .activity-name {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text-dark);
+    }
+
+    .activity-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .activity-badge {
+      background-color: #dcfce7;
+      color: #15803d;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    /* Chart visualization */
+    .bar-chart-container {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 120px;
+      padding: 16px 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chart-bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      gap: 8px;
+    }
+
+    .chart-bar-fill {
+      background-color: #cbd5e1;
+      width: 20px;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.3s, background-color 0.3s;
+    }
+
+    .chart-bar-col.active .chart-bar-fill {
+      background-color: var(--blue-accent);
+    }
+
+    @media print { body * {visibility:hidden;} #zoneFacture, #zoneFacture * {visibility:visible;} #zoneFacture {position:absolute; left:0; top:0;} button {display:none;} }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <svg class="brand-droplet" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+      </svg>
+      <span class="logo-title">HydroTech Africa</span>
+    </a>
+
+    <div class="navbar-actions">
+      <button class="icon-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+        <span class="dot"></span>
+      </button>
+      <button class="icon-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar & Main Content Wrapper -->
+  <div class="main-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">Admin Portal</h3>
+        <p class="sidebar-subtitle">Utility Management</p>
+      </div>
+
+      <a href="index.html" class="sidebar-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        Retour Dashboard
+      </a>
+      <a href="#" class="sidebar-link active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10" />
+          <line x1="12" y1="20" x2="12" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="14" />
+        </svg>
+        Analytics
+      </a>
+      <a href="clients.html" class="sidebar-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        Abonnés
+      </a>
+      <a href="nouveau-client.html" class="sidebar-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <line x1="19" y1="8" x2="19" y2="14" />
+          <line x1="16" y1="11" x2="22" y2="11" />
+        </svg>
+        Nouveau Client
+      </a>
+      <a href="#" class="sidebar-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
+        Reports
+      </a>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="content-area">
+
+      <!-- Page Header -->
+      <div class="page-title-row">
+        <div>
+          <h1 class="page-title">Saisie de Relevé</h1>
+          <p class="page-subtitle">Saisie manuelle des index de consommation d'eau pour facturation.</p>
+        </div>
+        <div class="session-info">
+          <div class="session-label">Session Actuelle</div>
+          <div class="session-val" id="displaySessionDate">Octobre 2024</div>
+        </div>
+      </div>
+
+      <!-- Main Layout Grid -->
+      <div class="layout-grid">
+
+        <!-- Left Side Cards -->
+        <div class="layout-left">
+
+          <!-- Selection Client Card -->
+          <div class="card">
+            <div class="form-group" style="margin-bottom: 0;">
+              <div class="card-title-row">
+                <h3 class="card-heading">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  Sélection du Client
+                </h3>
+              </div>
+              <input type="text" class="form-input" id="searchNom" placeholder="Chargement de la base clients..."
+                autocomplete="off">
+              <div id="listeNoms" class="dropdown-liste"></div>
+            </div>
+          </div>
+
+          <!-- hidden inputs -->
+          <input type="hidden" id="idClient">
+          <input type="hidden" id="nomClient">
+          <input type="hidden" id="numCompteur">
+          <input type="hidden" id="localiteClient">
+
+          <!-- Details du Relevé Card -->
+          <div class="card">
+            <div class="card-title-row">
+              <h3 class="card-heading">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10 9 9 9 8 9" />
+                </svg>
+                Détails du Relevé
+              </h3>
+              <span class="card-badge" id="lblBadgeCompteur">Compteur: ---</span>
+            </div>
+
+            <!-- Details input container -->
+            <div class="details-row-container">
+              <div class="inputs-col">
+                <div class="form-group">
+                  <label class="form-label">ANCIEN RELEVÉ (M³)</label>
+                  <input type="number" class="form-input" id="ancienIndex" placeholder="Saisir ancien index">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">NOUVEAU RELEVÉ (M³)*</label>
+                  <input type="number" class="form-input" id="nouveauIndex" placeholder="Saisir nouveau index" required>
+                </div>
+              </div>
+
+              <!-- Calculation recap metrics -->
+              <div class="results-col">
+                <div class="metric-item">
+                  <div class="metric-label">CONSOMMATION DU MOIS</div>
+                  <div class="metric-value" id="consommation">0 m³</div>
+                </div>
+                <div class="metric-item" style="border-top: 1px solid #bfdbfe; width: 100%; padding-top: 14px;">
+                  <div class="metric-label">ESTIMATION DU MONTANT</div>
+                  <div class="metric-value" id="montant" style="color: var(--navy);">0 FCFA</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="actions-row">
+              <button type="button" class="btn btn-valider" id="btnSauvegarde" onclick="validerEtGenererFacture()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10 9 9 9 8 9" />
+                </svg>
+                Valider et générer la facture
+              </button>
+              <button type="button" class="btn btn-reset" onclick="reinitialiser()">
+                🔄 Réinitialiser
+              </button>
+          </div>
+
+          <div id="zoneFacture" style="display:none; margin-top:20px;"></div>
+          <button id="btnImprimer" type="button" class="btn btn-valider" onclick="imprimerFacture()" style="display:none; margin-top: 15px; width: 100%;">🖨️ Imprimer la facture</button>
+        </div>
+
+        <!-- Right Side Cards -->
+        <div class="layout-right">
+
+          <!-- Selected profile quick widget -->
+          <div class="card" id="widgetAbonneCard" style="padding: 16px;">
+            <div class="profile-card-flex" id="profileEmptyState">
+              <div
+                style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500; text-align: center; width: 100%;">
+                Sélectionnez un abonné pour afficher son profil
+              </div>
+            </div>
+
+            <div class="profile-card-flex" id="profileActiveState" style="display: none;">
+              <div class="profile-avatar-circle" id="profileInitials">HT</div>
+              <div>
+                <div class="profile-info-name" id="profileNameDisplay">Zabsonre Moussa</div>
+                <div class="profile-info-meta" id="profileMetaDisplay">ID: HT-2024-0812 | Zone: Ouaga</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activites recentes list card -->
+          <div class="card">
+            <div class="card-title-row">
+              <h3 class="card-heading" style="font-size: 1rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                Activités Récentes
+              </h3>
+            </div>
+
+            <div class="activities-list-container" id="recentActivitiesList">
+              <div style="padding:15px; text-align:center; color:var(--text-muted); font-size:0.85rem;">
+                Chargement de l'activité...
+              </div>
+            </div>
+          </div>
+
+          <!-- Tendance zone card -->
+          <div class="card">
+            <h3 class="card-heading" style="font-size: 0.95rem; margin-bottom: 12px;">Tendance Zone (Moyenne)</h3>
+            <div class="bar-chart-container">
+              <div class="chart-bar-col">
+                <div class="chart-bar-fill" style="height: 50px;"></div>
+                <span class="chart-bar-label">Mai</span>
+              </div>
+              <div class="chart-bar-col">
+                <div class="chart-bar-fill" style="height: 38px;"></div>
+                <span class="chart-bar-label">Juin</span>
+              </div>
+              <div class="chart-bar-col">
+                <div class="chart-bar-fill" style="height: 65px;"></div>
+                <span class="chart-bar-label">Juil</span>
+              </div>
+              <div class="chart-bar-col active">
+                <div class="chart-bar-fill" style="height: 85px;"></div>
+                <span class="chart-bar-label">Aout</span>
+              </div>
+              <div class="chart-bar-col">
+                <div class="chart-bar-fill" style="height: 55px;"></div>
+                <span class="chart-bar-label">Sep</span>
+              </div>
+              <div class="chart-bar-col">
+                <div class="chart-bar-fill" style="height: 42px;"></div>
+                <span class="chart-bar-label">Oct</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs, doc, updateDoc, addDoc, limit, orderBy, serverTimestamp, getDoc, setDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBF6LktQR2e0bNADnH6Vxx3x6KAwb7r0bs",
+      authDomain: "hydrotech-fact.firebaseapp.com",
+      projectId: "hydrotech-fact",
+      storageBucket: "hydrotech-fact.appspot.com",
+      messagingSenderId: "808276202453",
+      appId: "1:808276202453:web:310cabd46a0886348d635c",
+      measurementId: "G-BBTD9YHKSE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let clientSelectionne = null;
+
+    const optionsDate = { month: 'long', year: 'numeric' };
+    const formattedDateHeader = new Date().toLocaleDateString('fr-FR', optionsDate);
+    document.getElementById("displaySessionDate").textContent = formattedDateHeader.charAt(0).toUpperCase() + formattedDateHeader.slice(1);
+
+    onAuthStateChanged(auth, (user) => {
+      const searchInput = document.getElementById("searchNom");
+      if (user) {
+        searchInput.placeholder = "Rechercher par Nom...";
+        searchInput.disabled = false;
+        loadRecentActivities();
+      } else {
+        searchInput.placeholder = "Veuillez vous connecter";
+        searchInput.disabled = true;
+        const box = document.getElementById("listeNoms");
+        box.innerHTML = `<div style="padding: 10px; color: var(--text-muted); font-size:0.88rem;">Veuillez vous connecter</div>`;
+        box.style.display = "block";
+      }
+    });
+
+    async function loadRecentActivities() {
+      if (!auth.currentUser) return;
+      try {
+        const relevesCol = collection(db, "releves");
+        const q = query(relevesCol, orderBy("dateHeure", "desc"), limit(5));
+        const snap = await getDocs(q);
+        const box = document.getElementById("recentActivitiesList");
+        box.innerHTML = "";
+        if (snap.empty) {
+          box.innerHTML = "<div style='padding:15px; text-align:center; color:var(--text-muted); font-size:0.85rem;'>Aucun relevé enregistré</div>";
+          return;
+        }
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          const dateStr = data.dateHeure ? new Date(data.dateHeure).toLocaleDateString('fr-FR') : new Date().toLocaleDateString('fr-FR');
+          box.innerHTML += `
+            <div class="activity-row">
+              <div class="activity-meta">
+                <span class="activity-name">${data.clientNom || "Abonné"}</span>
+                <span class="activity-time">${data.clientId || ""} | ${dateStr}</span>
+              </div>
+              <span class="activity-badge">+${data.consommation || 0} m³</span>
+            </div>
+          `;
+        });
+      } catch (err) { console.error(err); }
+    }
+
+    let searchTimeout = null;
+    document.getElementById("searchNom").addEventListener("input", e => {
+      const val = e.target.value.trim();
+      const box = document.getElementById("listeNoms");
+      if (val.length < 2) { box.style.display = "none"; return; }
+      if (searchTimeout) clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(async () => {
+        if (!auth.currentUser) return;
+        box.innerHTML = `<div style="padding: 10px; color: var(--text-muted); font-size:0.88rem;">Recherche en cours...</div>`;
+        box.style.display = "block";
+        try {
+          const q = query(collection(db, "clients"), where("nom", ">=", val.toUpperCase()), where("nom", "<=", val.toUpperCase() + '\uf8ff'));
+          const snap = await getDocs(q);
+          box.innerHTML = "";
+          if (snap.empty) { box.innerHTML = `<div style="padding: 10px; color: var(--text-muted); font-size:0.88rem;">Aucun abonné trouvé</div>`; return; }
+          snap.forEach(docSnap => {
+            const c = { id: docSnap.id, ...docSnap.data() };
+            const div = document.createElement("div");
+            div.className = "dropdown-item";
+            div.innerHTML = `<b>${c.nom_client || c.nom}</b> - Compteur: ${c.num_compteur || c.compteur_id}`;
+            div.addEventListener("click", () => choisirClient(c.id, c.nom_client || c.nom, c.num_compteur || c.compteur_id, c.dernier_index, c.localite));
+            box.appendChild(div);
+          });
+        } catch (err) { box.innerHTML = `<div style="padding: 10px; color: var(--text-danger); font-size:0.88rem;">Erreur: ${err.message}</div>`; }
+      }, 300);
+    });
+
+    function chargerClient(client) {
+      clientSelectionne = client;
+      const ancienInput = document.getElementById("ancienIndex");
+      ancienInput.value = client.ancienIndex || client.dernier_index || '';
+      
+      document.getElementById("idClient").value = client.id || '';
+      document.getElementById("nomClient").value = client.nom || '';
+      document.getElementById("numCompteur").value = client.compteur || client.compteur_id || '';
+      document.getElementById("localiteClient").value = client.localite || "ZIASSO";
+      document.getElementById("lblBadgeCompteur").textContent = "Compteur: " + (client.compteur || client.compteur_id || '---');
+      
+      document.getElementById("profileEmptyState").style.display = "none";
+      const initials = client.nom ? client.nom.split(" ").map(w => w.charAt(0)).slice(0, 2).join("").toUpperCase() : "HT";
+      document.getElementById("profileInitials").textContent = initials;
+      document.getElementById("profileNameDisplay").textContent = client.nom || '';
+      document.getElementById("profileMetaDisplay").textContent = "ID: " + (client.compteur || client.compteur_id || '') + " | Zone: " + (client.localite || "ZIASSO");
+      document.getElementById("profileActiveState").style.display = "flex";
+      
+      calculer();
+    }
+
+    function choisirClient(id, nom, compteur, index, localite) {
+      chargerClient({ id, nom, compteur, dernier_index: index, localite, ancienIndex: index });
+      document.getElementById("searchNom").value = nom;
+      document.getElementById("listeNoms").style.display = "none";
+    }
+
+    // Calcul en direct
+    document.getElementById("ancienIndex").addEventListener("input", calculer);
+    document.getElementById("nouveauIndex").addEventListener("input", calculer);
+    function calculer() {
+      const ancien = parseFloat(document.getElementById("ancienIndex").value) || 0;
+      const nouveau = parseFloat(document.getElementById("nouveauIndex").value) || 0;
+      const conso = Math.max(0, nouveau - ancien);
+      const montant = conso * 400;
+      document.getElementById("consommation").innerText = conso + " m³";
+      document.getElementById("montant").innerText = montant.toLocaleString() + " FCFA";
+    }
+
+    document.addEventListener("click", e => { if (!e.target.closest("#searchNom")) document.getElementById("listeNoms").style.display = "none"; });
+
+    function reinitialiser() {
+      document.getElementById("ancienIndex").value = "";
+      document.getElementById("nouveauIndex").value = "";
+      calculer();
+    }
+
+    async function genererNumeroFacture() {
+      const compteurRef = doc(db, "compteurs", "factures");
+      const snap = await getDoc(compteurRef);
+      let dernier = 0;
+      if(snap.exists()) dernier = snap.data().dernier;
+      const nouveau = dernier + 1;
+      await setDoc(compteurRef, {dernier: nouveau});
+      const date = new Date();
+      const annee = date.getFullYear();
+      const mois = String(date.getMonth() + 1).padStart(2, '0');
+      return `FAC-${annee}-${mois}-${String(nouveau).padStart(4,'0')}`;
+    }
+
+    // ÉTAPE 2 : CRÉE CETTE FONCTION 
+    async function getImpayesClient(clientId) {
+      const q = query(collection(db, "factures"), 
+        where("clientId", "==", clientId), 
+        where("statut", "==", "impayée")
+      );
+      const snap = await getDocs(q);
+      let totalImpayes = 0;
+      let listeImpayes = [];
+      snap.forEach(doc => {
+        const f = doc.data();
+        totalImpayes += f.montant;
+        listeImpayes.push({num: f.numeroFacture, montant: f.montant});
+      });
+      return {total: totalImpayes, liste: listeImpayes};
+    }
+
+    async function validerEtGenererFacture() {
+      if(!clientSelectionne) return alert("Sélectionne d'abord un client");
+      
+      const ancienIndex = parseFloat(document.getElementById('ancienIndex').value) || 0;
+      const nouveauIndex = parseFloat(document.getElementById('nouveauIndex').value) || 0;
+      
+      if(nouveauIndex <= ancienIndex) return alert("Le nouveau relevé doit être supérieur à l'ancien");
+      
+      const consommation = nouveauIndex - ancienIndex;
+      const montant = consommation * 400;
+      const btnValider = document.getElementById("btnSauvegarde");
+      const originalText = btnValider.innerText;
+      btnValider.innerText = "Sauvegarde...";
+      
+      try {
+        const numeroFacture = await genererNumeroFacture();
+        const dateEmission = Timestamp.now();
+        const dateEcheance = Timestamp.fromDate(new Date(Date.now() + 15 * 24 * 60 * 60 * 1000));
+        
+        // ÉTAPE 1 : AVANT DE GÉNÉRER LA FACTURE
+        const impayes = await getImpayesClient(clientSelectionne.id);
+
+        // ÉTAPE 3 : MODIFIE LE CALCUL DU TOTAL
+        let montantTotal = montant; // montant de la nouvelle conso
+        if(impayes.total > 0){
+          montantTotal = montant + impayes.total;
+        }
+
+        // 1. Sauvegarder la facture (ÉTAPE 5 : SAUVEGARDE DANS FIREBASE)
+        await addDoc(collection(db, "factures"), {
+          numeroFacture,
+          clientId: clientSelectionne.id,
+          nomClient: clientSelectionne.nom,
+          localite: clientSelectionne.localite || "ZIASSO",
+          ancienIndex,
+          nouveauIndex,
+          consommation,
+          prixM3: 400,
+          montant,
+          montantTotal: montantTotal,
+          arrieres: impayes.total,
+          dateEmission,
+          dateEcheance,
+          statut: "impayée",
+          creeLe: Timestamp.now()
+        });
+
+        // Ouvrir la facture dans un nouvel onglet (standalone) au lieu de l'afficher en dessous
+        const printWindow = window.open("", "_blank");
+        if (printWindow) {
+          const html = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Facture ${numeroFacture}</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; display: flex; flex-direction: column; align-items: center; }
+              .invoice-wrapper { width: 100%; max-width: 800px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; padding: 20px; box-sizing: border-box; }
+              .btn-container { margin-bottom: 20px; text-align: center; width: 100%; max-width: 800px; display: flex; justify-content: center; gap: 15px; }
+              .btn { padding: 12px 24px; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 6px; border: none; transition: background 0.2s; }
+              .btn-print { background-color: #0056b3; color: white; }
+              .btn-print:hover { background-color: #004085; }
+              .btn-close { background-color: #6c757d; color: white; }
+              .btn-close:hover { background-color: #5a6268; }
+              @media print {
+                .btn-container { display: none; }
+                body { background-color: white; padding: 0; }
+                .invoice-wrapper { box-shadow: none; border-radius: 0; max-width: 100%; padding: 0; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="btn-container">
+              <button class="btn btn-print" onclick="window.print()">🖨️ Imprimer la facture</button>
+              <button class="btn btn-close" onclick="window.close()">Fermer</button>
+            </div>
+            <div class="invoice-wrapper">
+              ${genererHTMLFacture(numeroFacture, consommation, montant, dateEmission, dateEcheance, impayes, montantTotal)}
+            </div>
+          </body>
+          </html>
+          `;
+          printWindow.document.write(html);
+          printWindow.document.close();
+        } else {
+          alert("Le bloqueur de fenêtres pop-up a empêché l'ouverture de la facture. Veuillez autoriser les fenêtres pop-up.");
+        }
+        
+        // 2. Mettre à jour le client avec le nouveau relevé
+        await updateDoc(doc(db, "clients", clientSelectionne.id), {
+          ancienIndex: nouveauIndex,
+          dernier_index: nouveauIndex
+        });
+
+        // 3. Enregistrer également dans la collection "releves" pour historique et tableau de bord
+        await addDoc(collection(db, "releves"), {
+          clientId: clientSelectionne.id, 
+          clientNom: clientSelectionne.nom,
+          consommation, 
+          ancien_index: ancienIndex, 
+          nouvel_index: nouveauIndex,
+          date: serverTimestamp(), 
+          dateHeure: new Date().toISOString()
+        });
+        
+        alert(`Facture ${numeroFacture} enregistrée avec succès ! ${montantTotal} FCFA`);
+        reinitialiser();
+      } catch (err) {
+        alert("Erreur: " + err.message);
+        btnValider.innerText = originalText;
+      }
+    }
+
+    function genererCodeClient(id) {
+      return clientSelectionne.codeClient || clientSelectionne.idMetier || clientSelectionne.compteur || clientSelectionne.compteur_id || 'N/A';
+    }
+
+    // ÉTAPE 4 : MODIFIE LE HTML DE LA FACTURE DANS genererHTMLFacture()
+    function genererHTMLFacture(num, conso, montant, dateEm, dateEch, impayes = {total: 0, liste: []}, montantTotal = montant) {
+      const dateE = dateEm.toDate().toLocaleDateString('fr-FR');
+      const dateEc = dateEch.toDate().toLocaleDateString('fr-FR');
+      return `
+      <div style="border:2px solid #0056b3; padding:20px; font-family:Arial; background-color: white; border-radius: 8px;">
+        <h2 style="text-align:center; color:#0056b3; margin-bottom: 15px;">HYDROTECH AFRICA</h2>
+        <p style="margin-bottom: 8px;"><b>N° Facture:</b> ${num}</p>
+        <p style="margin-bottom: 8px;"><b>Client:</b> ${clientSelectionne.nom}</p>
+        <p style="margin-bottom: 8px;"><b>ID Client:</b> ${genererCodeClient(clientSelectionne.id)}</p>
+        <p style="margin-bottom: 15px;"><b>Date:</b> ${dateE} | <b>Échéance:</b> ${dateEc}</p>
+        <hr style="margin-bottom: 15px;">
+        <table width="100%" style="border-collapse: collapse; margin-bottom: 15px;">
+          <thead>
+            <tr style="background-color: #0056b3; color: white;">
+              <th style="padding: 10px; text-align: left;">Désignation</th>
+              <th style="padding: 10px; text-align: center;">Qté</th>
+              <th style="padding: 10px; text-align: center;">PU</th>
+              <th style="padding: 10px; text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: left;">Consommation d'eau potable</td>
+              <td style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">${conso} m³</td>
+              <td style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">400 FCFA</td>
+              <td style="padding: 10px; text-align: right; border-bottom: 1px solid #ddd;">${montant} FCFA</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        ${impayes.liste.length > 0 ? `
+        <hr>
+        <h4 style="color:red;">ARRIÉRÉS ANTÉRIEURS</h4>
+        ${impayes.liste.map(i => `<p>Facture ${i.num} : ${i.montant} FCFA</p>`).join('')}
+        <h4 style="color:red;">Total Arriérés : ${impayes.total} FCFA</h4>
+        ` : ''}
+
+        <h3 style="text-align:right; color: #0056b3;">TOTAL À PAYER: ${montantTotal} FCFA</h3>
+      </div>`;
+    }
+
+    function imprimerFacture() { window.print(); }
+
+    window.choisirClient = choisirClient;
+    window.chargerClient = chargerClient;
+    window.reinitialiser = reinitialiser;
+    window.validerEtGenererFacture = validerEtGenererFacture;
+  </script>
+</body>
+
+</html>

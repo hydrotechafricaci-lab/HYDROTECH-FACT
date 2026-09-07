@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facture HYDROTECH AFRICA</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #0d53c6;
+      --primary-dark: #073b93;
+      --primary-light: #e6f0fa;
+      --navy: #0d2d6b;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --bg: #f3f6fb;
+      --white: #ffffff;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --radius: 8px;
+      --radius-lg: 16px;
+      --transition: all 0.25s ease;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ====== TOP NAVIGATION / ACTION BAR ====== */
+    .top-bar {
+      height: 75px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(13, 45, 107, 0.04);
+    }
+
+    .brand {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--navy);
+      letter-spacing: 0.02em;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-action {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .btn-print {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+    }
+
+    .btn-print:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(13, 83, 198, 0.25);
+    }
+
+    .btn-download {
+      background: #ffffff;
+      color: var(--text-dark);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-download:hover {
+      background: #f8fafc;
+      border-color: var(--text-muted);
+    }
+
+    .btn-icon {
+      background: #ffffff;
+      color: var(--text-dark);
+      border: 1.5px solid var(--border);
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-icon:hover {
+      background: #f8fafc;
+      border-color: var(--text-muted);
+    }
+
+    .btn-action svg, .btn-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2.2;
+    }
+
+    /* ====== INVOICE CONTAINER ====== */
+    .invoice-container {
+      flex: 1;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-y: auto;
+    }
+
+    .invoice-card {
+      width: 100%;
+      max-width: 820px;
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 35px rgba(13, 45, 107, 0.07);
+      padding: 45px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Drop Watermark Background */
+    .watermark {
+      position: absolute;
+      right: 10%;
+      bottom: 12%;
+      width: 200px;
+      height: 250px;
+      opacity: 0.035;
+      pointer-events: none;
+      transform: rotate(15deg);
+    }
+
+    /* ====== INVOICE HEADER ====== */
+    .invoice-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .logo-container {
+      margin-bottom: 14px;
+    }
+
+    .logo-droplet {
+      width: 48px;
+      height: 48px;
+      color: var(--primary);
+    }
+
+    .company-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--navy);
+      letter-spacing: 0.03em;
+      margin-bottom: 4px;
+    }
+
+    .invoice-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ====== DETAILS GRID (Columns) ====== */
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .info-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      background: #f8fafc;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card.invoice-details {
+      background: #ffffff;
+      border-top: 3.5px solid var(--primary);
+    }
+
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .card-row {
+      display: flex;
+      margin-bottom: 8px;
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+
+    .card-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .row-label {
+      width: 100px;
+      color: var(--text-muted);
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .row-value {
+      color: var(--text-dark);
+      font-weight: 600;
+    }
+
+    /* Total a payer in right card */
+    .total-payer-row {
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+    }
+
+    .total-payer-label {
+      font-weight: 800;
+      color: var(--navy);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    .total-payer-value {
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 1.05rem;
+    }
+
+    /* ====== HISTORY SECTION ====== */
+    .history-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 24px;
+      background: #ffffff;
+      margin-bottom: 30px;
+    }
+
+    .history-title {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .chart-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 70px;
+      padding: 0 10px;
+      margin-bottom: 4px;
+    }
+
+    .chart-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 50px;
+    }
+
+    .chart-bar {
+      width: 32px;
+      background: #d2e1f5;
+      border-radius: 4px 4px 0 0;
+      min-height: 4px;
+      transition: height 0.6s ease;
+    }
+
+    .chart-bar.current {
+      background: var(--primary);
+    }
+
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
+      margin-top: 6px;
+      border-top: 1.5px solid var(--border);
+      padding-top: 6px;
+    }
+
+    .chart-label {
+      width: 50px;
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .chart-label.current {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    /* ====== HISTORY TOGGLE BUTTONS ====== */
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .history-toggle-group {
+      display: inline-flex;
+      background: #f1f5f9;
+      padding: 3px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+    
+    .btn-toggle {
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 4px 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+    }
+    
+    .btn-toggle.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-toggle:hover:not(.active) {
+      color: var(--navy);
+    }
+
+    /* ====== UNPAID INVOICES SECTION ====== */
+    .unpaid-card {
+      border: 1px solid #fee2e2;
+      border-radius: 10px;
+      padding: 18px 24px;
+      background: #fdf2f2;
+      margin-bottom: 30px;
+    }
+
+    .unpaid-title {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #991b1b;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .unpaid-title::before {
+      content: "⚠️";
+      font-size: 0.9rem;
+    }
+
+    .unpaid-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+    }
+
+    .unpaid-table th {
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #991b1b;
+      padding: 8px 12px;
+      border-bottom: 1.5px solid #fca5a5;
+      text-transform: uppercase;
+    }
+
+    .unpaid-table td {
+      font-size: 0.8rem;
+      color: #7f1d1d;
+      padding: 10px 12px;
+      border-bottom: 1px solid #fee2e2;
+    }
+
+    .unpaid-table .col-total {
+      text-align: right;
+    }
+
+    .unpaid-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .unpaid-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #991b1b;
+      padding-top: 10px;
+      border-top: 1.5px solid #fca5a5;
+    }
+
+    .unpaid-sum-val {
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    /* ====== TABLE SECTION ====== */
+    .table-container {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+
+    .invoice-table th {
+      background: var(--primary);
+      color: #ffffff;
+      padding: 10px 16px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .invoice-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-dark);
+      line-height: 1.4;
+    }
+
+    .invoice-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .col-qty, .col-pu {
+      text-align: center;
+      width: 100px;
+    }
+
+    .col-total {
+      text-align: right;
+      width: 150px;
+      font-weight: 600;
+    }
+
+    /* Summary block underneath table */
+    .summary-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 0 16px;
+      margin-bottom: 30px;
+      font-size: 0.875rem;
+    }
+
+    .summary-row {
+      display: flex;
+      width: 280px;
+      justify-content: space-between;
+    }
+
+    .summary-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .summary-value {
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    /* ====== BANNER TOTAL NET ====== */
+    .total-net-banner {
+      background: var(--primary-light);
+      border-radius: 8px;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 35px;
+    }
+
+    .banner-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-status {
+      background: var(--danger);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .banner-note {
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    .banner-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .banner-total-label {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: var(--navy);
+      letter-spacing: 0.05em;
+    }
+
+    .banner-total-value {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: var(--primary);
+    }
+
+    /* ====== FOOTER DETAILS ====== */
+    .invoice-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .contact-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      width: 100%;
+      gap: 15px;
+      margin-bottom: 20px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .contact-item svg {
+      width: 14px;
+      height: 14px;
+      color: var(--primary);
+    }
+
+    .legal-notice {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      max-width: 680px;
+      margin-bottom: 22px;
+    }
+
+    .tagline-bottom {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--primary);
+      letter-spacing: 0.08em;
+    }
+
+    /* ====== PRINT STYLES ====== */
+    @media print {
+      body {
+        background: #ffffff;
+        color: #000000;
+      }
+      .top-bar {
+        display: none !important;
+      }
+      .invoice-container {
+        padding: 0;
+        overflow: visible;
+      }
+      .invoice-card {
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        max-width: 100% !important;
+      }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .invoice-table th {
+        background: var(--primary) !important;
+        color: #ffffff !important;
+      }
+      .total-net-banner {
+        background: var(--primary-light) !important;
+      }
+      .history-toggle-group {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVIGATION BAR -->
+  <div class="top-bar">
+    <div class="brand">HYDROTECH AFRICA</div>
+    <div class="actions">
+      <button class="btn-action btn-print" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        Imprimer
+      </button>
+      <button class="btn-action btn-download" id="downloadBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Télécharger
+      </button>
+      <button class="btn-icon" id="shareBtn" title="Partager la facture">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- INVOICE WRAPPER -->
+  <div class="invoice-container">
+    <div class="invoice-card">
+      
+      <!-- Watermark Droplet Background Shape -->
+      <svg class="watermark" viewBox="0 0 30 40" fill="currentColor">
+        <path d="M15,3 C15,3 27,15 27,25 C27,31.6 21.6,37 15,37 C8.4,37 3,31.6 3,25 C3,15 15,3 15,3 Z" fill="none" stroke="currentColor" stroke-width="1.5"></path>
+        <path d="M15,9 C15,9 23,17 23,25 C23,29.4 19.4,33 15,33 C10.6,33 7,29.4 7,25 C7,17 15,9 15,9 Z" fill="none" stroke="currentColor" stroke-width="1"></path>
+      </svg>
+
+      <!-- HEADER -->
+      <div class="invoice-header">
+        <div class="logo-container">
+          <svg class="logo-droplet" viewBox="0 0 30 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15,3 C15,3 27,15 27,25 C27,31.6 21.6,37 15,37 C8.4,37 3,31.6 3,25 C3,15 15,3 15,3 Z"></path>
+            <path d="M15,10 C15,10 22,17 22,25 C22,28.8 18.8,32 15,32 C11.2,32 8,28.8 8,25 C8,17 15,10 15,10 Z" opacity="0.6"></path>
+            <path d="M15,17 C15,17 18,20 18,25 C18,26.6 16.6,28 15,28 C13.4,28 12,26.6 12,25 C12,20 15,17 15,17 Z" opacity="0.3"></path>
+          </svg>
+        </div>
+        <h1 class="company-name">HYDROTECH AFRICA</h1>
+        <div class="invoice-title">Facture d'eau potable</div>
+      </div>
+
+      <!-- DETAILS GRID -->
+      <div class="details-grid">
+        <!-- Client card -->
+        <div class="info-card">
+          <div class="card-title">Informations Client</div>
+          <div class="card-row">
+            <span class="row-label">Client:</span>
+            <span class="row-value" id="clientNom">---</span>
+          </div>
+          <div class="card-row">
+            <span class="row-label">ID Client:</span>
+            <span class="row-value" id="clientId">---</span>
+          </div>
+          <div class="card-row">
+            <span class="row-label">Localité:</span>
+            <span class="row-value" id="clientLocalite">---</span>
+          </div>
+        </div>
+
+        <!-- Invoice card -->
+        <div class="info-card invoice-details">
+          <div class="card-title">Détails Facture</div>
+          <div class="card-row">
+            <span class="row-label">N° Facture:</span>
+            <span class="row-value" id="invoiceNum">---</span>
+          </div>
+          <div class="card-row">
+            <span class="row-label">Date:</span>
+            <span class="row-value" id="invoiceDate">---</span>
+          </div>
+          <div class="card-row">
+            <span class="row-label">Échéance:</span>
+            <span class="row-value" id="invoiceDueDate">---</span>
+          </div>
+          <div class="total-payer-row">
+            <span class="total-payer-label">Total à payer</span>
+            <span class="total-payer-value" id="totalPayerVal">0 FCFA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONSUMPTION HISTORY -->
+      <div class="history-card">
+        <div class="history-header">
+          <div class="history-title" id="historyCardTitle">Historique de consommation (6 derniers mois)</div>
+          <div class="history-toggle-group">
+            <button type="button" class="btn-toggle active" id="toggle6Months">6 mois</button>
+            <button type="button" class="btn-toggle" id="toggle3Months">3 mois</button>
+          </div>
+        </div>
+        <div class="chart-container" id="chartBars">
+          <!-- Populated dynamically via JS -->
+        </div>
+        <div class="chart-labels" id="chartLabels">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- UNPAID INVOICES LISTING -->
+      <div class="unpaid-card" id="unpaidCard" style="display: none;">
+        <div class="unpaid-title">Factures Impayées Antérieures</div>
+        <div class="unpaid-list-container">
+          <table class="unpaid-table">
+            <thead>
+              <tr>
+                <th>N° Facture</th>
+                <th>Période</th>
+                <th>Échéance</th>
+                <th class="col-total" style="text-align: right;">Montant FCFA</th>
+              </tr>
+            </thead>
+            <tbody id="unpaidTableBody">
+              <!-- Populated dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+        <div class="unpaid-summary">
+          <span>Total Impayés Antérieurs:</span>
+          <span class="unpaid-sum-val" id="unpaidTotalVal">0 FCFA</span>
+        </div>
+      </div>
+
+      <!-- INVOICE TABLE -->
+      <div class="table-container">
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th>Désignation</th>
+              <th class="col-qty">Qté M³</th>
+              <th class="col-pu">PU FCFA</th>
+              <th class="col-total">Total FCFA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Consommation d'eau potable (Période <span id="tablePeriod">---</span>)</td>
+              <td class="col-qty" id="tableConso">0</td>
+              <td class="col-pu">400</td>
+              <td class="col-total" id="tableConsoTotal">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SUMMARY UNDER TABLE -->
+      <div class="summary-block">
+        <div class="summary-row">
+          <span class="summary-label">Sous-total</span>
+          <span class="summary-value" id="summarySubtotal">0 FCFA</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Taxes (Exonéré)</span>
+          <span class="summary-value">0 FCFA</span>
+        </div>
+      </div>
+
+      <!-- TOTAL NET BANNER -->
+      <div class="total-net-banner">
+        <div class="banner-left">
+          <span class="badge-status">IMPAYÉ</span>
+          <span class="banner-note">Veuillez régulariser avant le <span id="bannerDueDate">---</span></span>
+        </div>
+        <div class="banner-right">
+          <span class="banner-total-label">TOTAL NET</span>
+          <span class="banner-total-value" id="bannerTotalVal">0 FCFA</span>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="invoice-footer">
+        <div class="contact-info">
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>Abidjan, Côte d'Ivoire - Zone Industrielle</span>
+          </div>
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <span>+225 00 00 00 00</span>
+          </div>
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span>www.hydrotech-africa.com</span>
+          </div>
+        </div>
+        <p class="legal-notice">
+          © 2026 HydroTech Africa. Tous droits réservés. Le non-paiement de cette facture dans les délais impartis peut entraîner une suspension temporaire du service. Conditions Générales | Confidentialité | Contact
+        </p>
+        <div class="tagline-bottom">GÉRER L'EAU POUR L'AVENIR</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBF6LktQR2e0bNADnH6Vxx3x6KAwb7r0bs",
+      authDomain: "hydrotech-fact.firebaseapp.com",
+      projectId: "hydrotech-fact",
+      storageBucket: "hydrotech-fact.appspot.com",
+      messagingSenderId: "808276202453",
+      appId: "1:808276202453:web:310cabd46a0886348d635c",
+      measurementId: "G-BBTD9YHKSE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // LOGIQUE OBLIGATOIRE POUR GENERER LE NUMERO
+    async function genererNumeroFacture() {
+      const compteurRef = doc(db, "compteurs", "factures");
+      const snap = await getDoc(compteurRef);
+      let dernier = 0;
+      if(snap.exists()) dernier = snap.data().dernier;
+      const nouveau = dernier + 1;
+      await setDoc(compteurRef, {dernier: nouveau});
+      
+      const date = new Date();
+      const annee = date.getFullYear();
+      const mois = String(date.getMonth() + 1).padStart(2, '0');
+      return `FAC-${annee}-${mois}-${String(nouveau).padStart(4,'0')}`;
+    }
+    window.genererNumeroFacture = genererNumeroFacture;
+
+    // PARSING PARAMS
+    const params = new URLSearchParams(window.location.search);
+    const clientName = params.get("nom") || "Abonné HYDROTECH";
+    const clientMeter = params.get("compteur") || "---";
+    const clientIdVal = params.get("id") || "";
+    const clientLoc = params.get("localite") || "ZIASSO";
+    const billingPeriod = params.get("periode") || "---";
+    const rawConso = Number(params.get("conso")) || 0;
+
+    // Calculate emission date and due date (+15 days)
+    const dateStr = params.get("date") || new Date().toLocaleDateString('fr-FR');
+    let dueDateStr = "";
+    try {
+      const parts = dateStr.split("/");
+      if (parts.length === 3) {
+        const invDate = new Date(parts[2], parts[1] - 1, parts[0]);
+        const dueDateObj = new Date(invDate);
+        dueDateObj.setDate(dueDateObj.getDate() + 15);
+        dueDateStr = dueDateObj.toLocaleDateString('fr-FR');
+      } else {
+        const d = new Date();
+        d.setDate(d.getDate() + 15);
+        dueDateStr = d.toLocaleDateString('fr-FR');
+      }
+    } catch(e) {
+      const d = new Date();
+      d.setDate(d.getDate() + 15);
+      dueDateStr = d.toLocaleDateString('fr-FR');
+    }
+
+    // Invoice calculation forcing 400 FCFA rate
+    const totalToPay = rawConso * 400;
+
+    // 1. Fetch codeClient or idMetier from Firestore, if not exist show N/A
+    let codeClientVal = "N/A";
+    if (clientIdVal) {
+      try {
+        const clientSnap = await getDoc(doc(db, "clients", clientIdVal));
+        if (clientSnap.exists()) {
+          const cData = clientSnap.data();
+          codeClientVal = cData.codeClient || cData.idMetier || "N/A";
+        }
+      } catch (err) {
+        console.error("Erreur lecture client Firestore:", err);
+      }
+    }
+
+    // 2. Fetch or Generate Invoice number
+    let invoiceNoStr = params.get("numeroFacture");
+    if (!invoiceNoStr) {
+      try {
+        invoiceNoStr = await genererNumeroFacture();
+      } catch (err) {
+        console.error("Erreur génération automatique N° Facture:", err);
+        invoiceNoStr = "FAC-2026-08-0001";
+      }
+    }
+
+    // UPDATE DOM WITH FORCED rates & client info
+    document.getElementById("clientNom").innerText = clientName;
+    document.getElementById("clientId").innerText = codeClientVal;
+    document.getElementById("clientLocalite").innerText = clientLoc;
+    
+    document.getElementById("invoiceNum").innerText = invoiceNoStr;
+    document.getElementById("invoiceDate").innerText = dateStr;
+    document.getElementById("invoiceDueDate").innerText = dueDateStr;
+    document.getElementById("totalPayerVal").innerText = totalToPay.toLocaleString('fr-FR') + " FCFA";
+
+    document.getElementById("tablePeriod").innerText = billingPeriod;
+    document.getElementById("tableConso").innerText = rawConso;
+    document.getElementById("tableConsoTotal").innerText = totalToPay.toLocaleString('fr-FR');
+    
+    document.getElementById("summarySubtotal").innerText = totalToPay.toLocaleString('fr-FR') + " FCFA";
+    document.getElementById("bannerDueDate").innerText = dueDateStr;
+    document.getElementById("bannerTotalVal").innerText = totalToPay.toLocaleString('fr-FR') + " FCFA";
+
+    // GENERATE CONSUMPTION CHART (3 OR 6 MONTHS) WITH FIRESTORE INTEGRATION
+    async function loadConsumptionHistory(numMonths) {
+      const monthsFR = ["JANV", "FÉVR", "MARS", "AVRIL", "MAI", "JUIN", "JUIL", "AOÛT", "SEPT", "OCT", "NOV", "DÉC"];
+      let endMonthIdx = 9; 
+      const periodLower = billingPeriod.toLowerCase();
+      for (let i = 0; i < 12; i++) {
+        const mName = new Date(2000, i, 1).toLocaleDateString('fr-FR', { month: 'long' }).toLowerCase();
+        if (periodLower.includes(mName)) {
+          endMonthIdx = i;
+          break;
+        }
+      }
+
+      const displayMonths = [];
+      const monthIndices = [];
+      for (let i = numMonths - 1; i >= 0; i--) {
+        const idx = (endMonthIdx - i + 12) % 12;
+        displayMonths.push(monthsFR[idx]);
+        monthIndices.push(idx);
+      }
+
+      // Fetch real historical consumption from Firestore
+      const realConsos = {};
+      if (clientIdVal) {
+        try {
+          const q = query(collection(db, "releves"), where("clientId", "==", clientIdVal));
+          const snap = await getDocs(q);
+          snap.forEach(doc => {
+            const data = doc.data();
+            let mIdx = -1;
+            if (data.creeLe) {
+              mIdx = data.creeLe.toDate().getMonth();
+            } else if (data.dateHeure) {
+              mIdx = new Date(data.dateHeure).getMonth();
+            } else if (data.date) {
+              const parts = data.date.split("/");
+              if (parts.length === 3) {
+                mIdx = parseInt(parts[1], 10) - 1;
+              }
+            }
+            if (mIdx !== -1) {
+              realConsos[mIdx] = (realConsos[mIdx] || 0) + (Number(data.consommation) || 0);
+            }
+          });
+        } catch (err) {
+          console.error("Erreur chargement historique réel:", err);
+        }
+      }
+
+      // Ensure the current invoice's consumption is set in the current month
+      realConsos[endMonthIdx] = rawConso;
+
+      // Simulated fallback heights for empty historical months
+      const simulatedHeights = [25, 45, 30, 55, 10];
+      const currentBarPercent = Math.min(100, Math.max(10, (rawConso / 50) * 100));
+
+      const chartBarsContainer = document.getElementById("chartBars");
+      const chartLabelsContainer = document.getElementById("chartLabels");
+
+      chartBarsContainer.innerHTML = "";
+      chartLabelsContainer.innerHTML = "";
+
+      let maxConso = rawConso;
+      monthIndices.forEach(idx => {
+        if (realConsos[idx] && realConsos[idx] > maxConso) {
+          maxConso = realConsos[idx];
+        }
+      });
+      if (maxConso < 10) maxConso = 10;
+
+      displayMonths.forEach((month, index) => {
+        const mIdx = monthIndices[index];
+        const isCurrent = index === (numMonths - 1);
+        
+        let heightPercent = 0;
+        let displayVal = "";
+        
+        if (realConsos[mIdx] !== undefined) {
+          heightPercent = Math.min(100, Math.max(10, (realConsos[mIdx] / maxConso) * 100));
+          displayVal = `${realConsos[mIdx]} M³`;
+        } else {
+          const simulatedIndex = 5 - numMonths + index;
+          const simulatedH = simulatedHeights[simulatedIndex] || 25;
+          heightPercent = simulatedH;
+          const simulatedC = Math.round((simulatedH / 100) * 40);
+          displayVal = `${simulatedC} M³`;
+        }
+
+        const colDiv = document.createElement("div");
+        colDiv.className = "chart-col";
+        colDiv.style.width = (100 / numMonths) + "%";
+        
+        const barDiv = document.createElement("div");
+        barDiv.className = isCurrent ? "chart-bar current" : "chart-bar";
+        barDiv.style.height = heightPercent + "%";
+        barDiv.title = `${month}: ${displayVal}`;
+        
+        colDiv.appendChild(barDiv);
+        chartBarsContainer.appendChild(colDiv);
+
+        const labelSpan = document.createElement("span");
+        labelSpan.className = isCurrent ? "chart-label current" : "chart-label";
+        labelSpan.innerText = month;
+        labelSpan.style.width = "100%";
+        chartLabelsContainer.appendChild(labelSpan);
+      });
+
+      document.getElementById("historyCardTitle").innerText = `Historique de consommation (${numMonths} derniers mois)`;
+    }
+
+    // LOAD UNPAID INVOICES FROM FIRESTORE
+    async function loadUnpaidInvoices() {
+      if (!clientIdVal) return;
+      try {
+        const unpaidCard = document.getElementById("unpaidCard");
+        const tbody = document.getElementById("unpaidTableBody");
+        const totalValEl = document.getElementById("unpaidTotalVal");
+        
+        tbody.innerHTML = "";
+        
+        const q = query(
+          collection(db, "factures"), 
+          where("clientId", "==", clientIdVal), 
+          where("statut", "==", "impayée")
+        );
+        const querySnapshot = await getDocs(q);
+        
+        let previousUnpaid = [];
+        let totalUnpaidSum = 0;
+        
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          // Filter out current invoice to show ONLY previous unpaid invoices
+          if (data.numeroFacture !== invoiceNoStr) {
+            previousUnpaid.push(data);
+            totalUnpaidSum += (Number(data.montant) || 0);
+          }
+        });
+        
+        if (previousUnpaid.length > 0) {
+          previousUnpaid.sort((a, b) => {
+            const dateA = a.creeLe ? a.creeLe.toDate() : new Date();
+            const dateB = b.creeLe ? b.creeLe.toDate() : new Date();
+            return dateB - dateA;
+          });
+          
+          previousUnpaid.forEach((inv) => {
+            const tr = document.createElement("tr");
+            let dateStr = "---";
+            let dueStr = "---";
+            if (inv.dateEmission) {
+              dateStr = inv.dateEmission.toDate().toLocaleDateString('fr-FR');
+            } else if (inv.creeLe) {
+              dateStr = inv.creeLe.toDate().toLocaleDateString('fr-FR');
+            }
+            if (inv.dateEcheance) {
+              dueStr = inv.dateEcheance.toDate().toLocaleDateString('fr-FR');
+            }
+            
+            const period = inv.periode || "---";
+            const amt = (Number(inv.montant) || 0).toLocaleString('fr-FR') + " FCFA";
+            
+            tr.innerHTML = `
+              <td><b>${inv.numeroFacture}</b></td>
+              <td>${period}</td>
+              <td>${dueStr}</td>
+              <td class="col-total" style="text-align: right;"><b>${amt}</b></td>
+            `;
+            tbody.appendChild(tr);
+          });
+          
+          totalValEl.innerText = totalUnpaidSum.toLocaleString('fr-FR') + " FCFA";
+          unpaidCard.style.display = "block";
+        } else {
+          unpaidCard.style.display = "none";
+        }
+      } catch (err) {
+        console.error("Erreur chargement factures impayées:", err);
+      }
+    }
+
+    // Set up toggle buttons event listeners
+    let currentHistoryMonths = 6;
+    const toggle6 = document.getElementById("toggle6Months");
+    const toggle3 = document.getElementById("toggle3Months");
+
+    toggle6.addEventListener("click", () => {
+      if (currentHistoryMonths !== 6) {
+        currentHistoryMonths = 6;
+        toggle6.classList.add("active");
+        toggle3.classList.remove("active");
+        loadConsumptionHistory(6);
+      }
+    });
+
+    toggle3.addEventListener("click", () => {
+      if (currentHistoryMonths !== 3) {
+        currentHistoryMonths = 3;
+        toggle3.classList.add("active");
+        toggle6.classList.remove("active");
+        loadConsumptionHistory(3);
+      }
+    });
+
+    // Initial loads
+    loadConsumptionHistory(6);
+    loadUnpaidInvoices();
+
+    // Action handlers
+    document.getElementById("shareBtn").addEventListener("click", () => {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Facture HydroTech',
+          text: `Facture de ${clientName} - Période: ${billingPeriod}`,
+          url: window.location.href,
+        }).catch(err => console.log(err));
+      } else {
+        alert("Lien de partage copié dans le presse-papiers : \n" + window.location.href);
+        navigator.clipboard.writeText(window.location.href);
+      }
+    });
+
+    function telechargerPDF() {
+      window.print();
+    }
+    document.getElementById("downloadBtn").addEventListener("click", telechargerPDF);
+  </script>
+</body>
+</html>

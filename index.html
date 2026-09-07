@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script>
+    if (sessionStorage.getItem('ht_logged_in') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="HydroTech Africa - Système professionnel de gestion et suivi des factures d'eau." />
+  <title>HydroTech Africa | Gestion Facturation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-name">HYDROTECH</span>
+        <span class="logo-sub">Utility Management</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Fermer le menu">&#10005;</button>
+    </div>
+
+    <!-- New Invoice Button -->
+    <button class="sidebar-new-btn" id="sidebarNewInvoiceBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Invoice
+    </button>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <li>
+          <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </span>
+            <span class="nav-label">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item" data-page="invoices" id="nav-invoices">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </span>
+            <span class="nav-label">Invoices</span>
+            <span class="nav-badge" id="pendingBadge">0</span>
+          </a>
+        </li>
+        <li>
+          <a href="clients.html" class="nav-item" id="nav-clients">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </span>
+            <span class="nav-label">Base de Données Clients</span>
+          </a>
+        </li>
+        <li>
+          <a href="nouveau-client.html" class="nav-item" id="nav-nouveau-client">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+            </span>
+            <span class="nav-label">Nouveau Client</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item" data-page="payments" id="nav-payments">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </span>
+            <span class="nav-label">Paiements</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item" data-page="reports" id="nav-reports">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </span>
+            <span class="nav-label">Analytics</span>
+          </a>
+        </li>
+        <li>
+          <a href="releve.html" class="nav-item" id="nav-releve">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </span>
+            <span class="nav-label">Saisie Relevé</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer" style="cursor: pointer;" onclick="logout()" title="Se déconnecter de la session">
+      <div class="user-info">
+        <div class="user-avatar">JD</div>
+        <div class="user-details">
+          <span class="user-name">Jean Dupont</span>
+          <span class="user-role">Déconnexion</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content wrapper -->
+  <div class="main-wrapper" id="mainWrapper">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" id="menuBtn" aria-label="Ouvrir le menu">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="page-title" id="pageTitle">Tableau de Bord</div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Rechercher des factures, clients..." id="globalSearch" />
+        </div>
+        <button class="topbar-icon-btn" id="notifBtn" title="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-dot" id="notifDot"></span>
+        </button>
+        <button class="topbar-icon-btn" title="Aide">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
+        <div class="user-avatar" style="background: var(--navy-mid); cursor: pointer;" onclick="logout()" title="Déconnexion (JD)">JD</div>
+      </div>
+    </header>
+
+    <!-- Pages -->
+    <main class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <section class="page active" id="page-dashboard">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Tableau de Bord</h1>
+            <p class="section-subtitle">Aperçu financier en temps réel</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-outline" id="dateRangeBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Derniers 30 jours
+            </button>
+            <button class="btn btn-outline" id="exportReportBtnDash">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Exporter
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats Grid (Visual 2) -->
+        <div class="stats-grid">
+          <!-- Stat 1 -->
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-icon-wrap blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              </div>
+              <div class="stat-change-chip up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:10px;height:10px;"><polyline points="18 15 12 9 6 15"/></svg>
+                +12.5%
+              </div>
+            </div>
+            <div class="stat-label">Revenu Total</div>
+            <div class="stat-value" id="statRevenue">0 <span class="unit">CFA</span></div>
+          </div>
+
+          <!-- Stat 2 -->
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-icon-wrap orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="stat-change-chip neutral">En attente</div>
+            </div>
+            <div class="stat-label">Paiements en attente</div>
+            <div class="stat-value" id="statPendingAmt">0 <span class="unit">CFA</span></div>
+          </div>
+
+          <!-- Stat 3 -->
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-icon-wrap green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div class="stat-change-chip up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:10px;height:10px;"><polyline points="18 15 12 9 6 15"/></svg>
+                +4%
+              </div>
+            </div>
+            <div class="stat-label">Clients Actifs</div>
+            <div class="stat-value" id="statActiveClients">0</div>
+          </div>
+        </div>
+
+        <!-- Recent Invoices table block (Visual 2) -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Factures Récentes</h2>
+            <div class="revenue-tabs">
+              <button class="rev-tab active" id="tabAllRecent" onclick="filterRecent('all')">Toutes</button>
+              <button class="rev-tab" id="tabUnpaidRecent" onclick="filterRecent('unpaid')">Impayées</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>N° Facture</th>
+                  <th>Nom du Client</th>
+                  <th>Montant</th>
+                  <th>Date d'Émission</th>
+                  <th>Statut</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recentInvoicesBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Region Breakdown & Recent Activity Grid -->
+        <div class="dashboard-grid">
+          <!-- Region -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Répartition par Région</h2>
+              <button class="topbar-icon-btn" style="border:none;" title="Détails">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </button>
+            </div>
+            <div style="padding: 24px; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height: 240px;">
+              <!-- Map representation visual placeholder matching screenshot 2 -->
+              <div style="border: 2.5px dashed var(--border); border-radius:12px; width: 100%; max-width: 320px; padding: 28px; text-align:center; background:#fafbff;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" style="width: 44px; height: 44px; margin-bottom: 12px;"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+                <p style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px;">Visualisation de la densité de paiement</p>
+                <div style="display:flex; justify-content:center; gap:12px; margin-top:14px; font-size:0.75rem;">
+                  <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:7px; height:7px; border-radius:50%; background:#0d2d6b;"></span>Urbain</span>
+                  <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:7px; height:7px; border-radius:50%; background:#1a56db;"></span>Péri-urbain</span>
+                  <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:7px; height:7px; border-radius:50%; background:#16a34a;"></span>Rural</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity feed -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Activité Récente</h2>
+            </div>
+            <div class="activity-feed" id="activityFeed">
+              <!-- Dynamically populated or static mock -->
+              <div class="activity-item">
+                <div class="activity-icon payment">💰</div>
+                <div class="activity-body">
+                  <div class="activity-title">Paiement reçu - #FAC-2026-0001</div>
+                  <div class="activity-desc">Client: Kouassi Amon. Il y a 15 min.</div>
+                </div>
+                <div class="activity-time">15m ago</div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon alert" style="background:var(--red-bg); color:var(--red);">⚠️</div>
+                <div class="activity-body">
+                  <div class="activity-title alert-text">Alerte de retard - #FAC-2026-0002</div>
+                  <div class="activity-desc">Facture de Adjoua Brou dépassée de 5 jours.</div>
+                </div>
+                <div class="activity-time">2h ago</div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon new" style="background:var(--blue-light); color:var(--navy);">👤</div>
+                <div class="activity-body">
+                  <div class="activity-title">Nouveau client enregistré</div>
+                  <div class="activity-desc">Koné Ibrahim a rejoint le réseau.</div>
+                </div>
+                <div class="activity-time">5h ago</div>
+              </div>
+              <div style="text-align:center; padding-top:12px;">
+                <a href="#" class="card-link" onclick="navigateTo('payments')">Voir toute l'activité</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FACTURES (INVOICES) ===== -->
+      <section class="page" id="page-invoices">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Factures d'Eau</h1>
+            <p class="section-subtitle">Gérez toutes les factures d'abonnés</p>
+          </div>
+          <button class="btn btn-primary" id="createInvoiceBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvelle Facture
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all" id="filterAll">Toutes</button>
+            <button class="filter-tab" data-filter="pending" id="filterPending">En attente</button>
+            <button class="filter-tab" data-filter="paid" id="filterPaid">Payées</button>
+            <button class="filter-tab" data-filter="overdue" id="filterOverdue">En retard</button>
+          </div>
+          <div class="filter-controls">
+            <select class="form-select" id="filterMonth">
+              <option value="">Tous les mois</option>
+              <option value="1">Janvier</option>
+              <option value="2">Février</option>
+              <option value="3">Mars</option>
+              <option value="4">Avril</option>
+              <option value="5">Mai</option>
+              <option value="6">Juin</option>
+              <option value="7">Juillet</option>
+              <option value="8">Août</option>
+              <option value="9">Septembre</option>
+              <option value="10">Octobre</option>
+              <option value="11">Novembre</option>
+              <option value="12">Décembre</option>
+            </select>
+            <select class="form-select" id="filterYear">
+              <option value="">Toutes les années</option>
+            </select>
+            <input type="text" class="form-input search-input" placeholder="Rechercher une facture..." id="invoiceSearch" />
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table class="data-table" id="invoicesTable">
+              <thead>
+                <tr>
+                  <th>N° Facture</th>
+                  <th>Client</th>
+                  <th>Période</th>
+                  <th>Consommation</th>
+                  <th>Montant</th>
+                  <th>Échéance</th>
+                  <th>Statut</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="invoicesBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Standalone clients.html is now used for the clients page -->
+
+      <!-- ===== PAIEMENTS ===== -->
+      <section class="page" id="page-payments">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Suivi des Paiements</h1>
+            <p class="section-subtitle">Historique des versements d'abonnés</p>
+          </div>
+        </div>
+
+        <div class="stats-grid mini">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-icon-wrap green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+            </div>
+            <div class="stat-label">Total Encaissé</div>
+            <div class="stat-value sm" id="payStatCollected">0 CFA</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-icon-wrap orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+            </div>
+            <div class="stat-label">Restant en attente</div>
+            <div class="stat-value sm" id="payStatPending">0 CFA</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-icon-wrap red">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+            </div>
+            <div class="stat-label">Dépassement de délai</div>
+            <div class="stat-value sm" id="payStatOverdue">0 CFA</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Transactions Récentes</h2>
+            <select class="form-select" id="paymentFilter" style="width: auto;">
+              <option value="all">Toutes</option>
+              <option value="paid">Réglées</option>
+              <option value="pending">En attente</option>
+              <option value="overdue">En retard</option>
+            </select>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>N° Facture</th>
+                  <th>Nom du Client</th>
+                  <th>Montant</th>
+                  <th>Date Versement</th>
+                  <th>Mode Paiement</th>
+                  <th>Statut</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="paymentsBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ANALYTICS / REPORTS ===== -->
+      <section class="page" id="page-reports">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Analytics</h1>
+            <p class="section-subtitle">Rapports de distribution et financiers</p>
+          </div>
+          <button class="btn btn-primary" id="printReportBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Imprimer Rapport
+          </button>
+        </div>
+
+        <div class="report-grid">
+          <div class="card">
+            <div class="card-header"><h2 class="card-title">Répartition par Statut</h2></div>
+            <div class="donut-chart-container">
+              <canvas id="statusChart" width="160" height="160"></canvas>
+              <div class="donut-legend" id="donutLegend"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h2 class="card-title">Abonnés les plus Débiteurs</h2></div>
+            <div class="top-clients-list" id="topClientsList">
+              <!-- JS loaded list -->
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Résumé Périodique</h2>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Mois</th>
+                  <th>Factures émises</th>
+                  <th>Montant total</th>
+                  <th>Encaissé</th>
+                  <th>Reste dû</th>
+                  <th>Recouvrement</th>
+                </tr>
+              </thead>
+              <tbody id="monthlyReportBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== MODALS ===== -->
+
+  <!-- 1. MODAL: FACTURE -->
+  <div class="modal-overlay" id="invoiceModal">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h2 class="modal-title" id="invoiceModalTitle">Créer une Facture d'Eau</h2>
+        <button class="modal-close" id="closeInvoiceModal">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <form id="invoiceForm">
+          <input type="hidden" id="invoiceId" />
+          
+          <div class="form-section">
+            <h3 class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              Sélection de l'Abonné
+            </h3>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="invClientSelect">Abonné *</label>
+                <select class="form-select" id="invClientSelect" required>
+                  <option value="">-- Choisir un client --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="invNumFacture">Numéro de Facture</label>
+                <input type="text" class="form-input" id="invNumFacture" readonly placeholder="Calcul automatique..." />
+              </div>
+            </div>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label">Nom complet</label>
+                <input type="text" class="form-input" id="invClientName" readonly placeholder="---" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Adresse de livraison</label>
+                <input type="text" class="form-input" id="invClientAddress" readonly placeholder="---" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">N° de Compteur</label>
+                <input type="text" class="form-input" id="invClientMeter" readonly placeholder="---" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Relevé de Consommation
+            </h3>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label" for="invPeriodStart">Début de Période</label>
+                <input type="date" class="form-input" id="invPeriodStart" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="invPeriodEnd">Fin de Période</label>
+                <input type="date" class="form-input" id="invPeriodEnd" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="invDueDate">Date Limite de Règlement *</label>
+                <input type="date" class="form-input" id="invDueDate" required />
+              </div>
+            </div>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label" for="invIndexPrev">Index Précédent (m³)</label>
+                <input type="number" class="form-input" id="invIndexPrev" min="0" step="0.001" placeholder="ex: 450" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="invIndexCurr">Index Actuel (m³)</label>
+                <input type="number" class="form-input" id="invIndexCurr" min="0" step="0.001" placeholder="ex: 485" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="invConsumption">Volume consommé (m³)</label>
+                <input type="number" class="form-input" id="invConsumption" readonly placeholder="Calculé auto" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Détail Tarification
+            </h3>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label" for="invUnitPrice">Tarif Unitaire (CFA/m³)</label>
+                <input type="number" class="form-input" id="invUnitPrice" min="0" step="1" value="500" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="invFixedFee">Frais d'abonnement (CFA)</label>
+                <input type="number" class="form-input" id="invFixedFee" min="0" step="1" value="2000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="invTaxRate">Taxe locale / TVA (%)</label>
+                <input type="number" class="form-input" id="invTaxRate" min="0" max="100" step="0.1" value="18" />
+              </div>
+            </div>
+
+            <!-- Total display breakdown -->
+            <div class="price-breakdown">
+              <div class="price-row">
+                <span>Coût consommation</span>
+                <span id="priceConsumption">0 CFA</span>
+              </div>
+              <div class="price-row">
+                <span>Maintenance compteur</span>
+                <span id="priceFixed">0 CFA</span>
+              </div>
+              <div class="price-row">
+                <span>Total HT</span>
+                <span id="priceSubtotal">0 CFA</span>
+              </div>
+              <div class="price-row">
+                <span>TVA (<span id="taxRateDisplay">18</span>%)</span>
+                <span id="priceTax">0 CFA</span>
+              </div>
+              <div class="price-row total">
+                <span>TOTAL TTC</span>
+                <span id="priceTotal">0 CFA</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3 class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Notes additionnelles
+            </h3>
+            <textarea class="form-input form-textarea" id="invNotes" rows="2" placeholder="Ex: fuite signalée, relève estimée..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelInvoiceBtn">Fermer</button>
+        <button class="btn btn-outline" id="previewInvoiceBtn">Visualiser PDF</button>
+        <button class="btn btn-primary" id="saveInvoiceBtn">Valider Facture</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MODAL: CLIENT -->
+  <div class="modal-overlay" id="clientModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="clientModalTitle">Fiche Nouvel Abonné</h2>
+        <button class="modal-close" id="closeClientModal">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <form id="clientForm">
+          <input type="hidden" id="clientId" />
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="clientFirstName">Prénom *</label>
+              <input type="text" class="form-input" id="clientFirstName" required placeholder="ex: Mamadou" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="clientLastName">Nom de famille *</label>
+              <input type="text" class="form-input" id="clientLastName" required placeholder="ex: Diallo" />
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="clientPhone">N° Téléphone</label>
+              <input type="tel" class="form-input" id="clientPhone" placeholder="ex: +225 07 00 00 00" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="clientEmail">Courriel</label>
+              <input type="email" class="form-input" id="clientEmail" placeholder="nom@exemple.af" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="clientAddress">Adresse de distribution *</label>
+            <input type="text" class="form-input" id="clientAddress" required placeholder="Quartier, N° lot, Ville" />
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="clientMeterNum">Numéro de Compteur</label>
+              <input type="text" class="form-input" id="clientMeterNum" placeholder="ex: HT-2024-09" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="clientZone">Zone / District</label>
+              <input type="text" class="form-input" id="clientZone" placeholder="ex: Abidjan-Nord" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="clientType">Type d'abonnement d'eau</label>
+            <select class="form-select" id="clientType">
+              <option value="residential">Résidentiel (Ménage)</option>
+              <option value="commercial">Commercial (Commerce)</option>
+              <option value="industrial">Industriel (Usine)</option>
+              <option value="public">Service public (Municipal)</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelClientBtn">Abandonner</button>
+        <button class="btn btn-primary" id="saveClientBtn">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MODAL: PREVIEW INVOICE -->
+  <div class="modal-overlay" id="previewModal">
+    <div class="modal modal-preview">
+      <div class="modal-header no-border">
+        <button class="btn btn-outline" id="printInvoiceBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Imprimer Direct
+        </button>
+        <button class="modal-close" id="closePreviewModal">&#10005;</button>
+      </div>
+      <div class="modal-body" id="invoicePreviewBody">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. MODAL: REGISTRATE PAYMENT -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Enregistrer un Encaissement</h2>
+        <button class="modal-close" id="closePaymentModal">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <form id="paymentForm">
+          <input type="hidden" id="paymentInvoiceId" />
+          <div class="payment-summary" id="paymentSummary"></div>
+          <div class="form-group">
+            <label class="form-label" for="paymentAmount">Somme perçue (CFA) *</label>
+            <input type="number" class="form-input" id="paymentAmount" min="1" step="1" required />
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="paymentDate">Date de versement *</label>
+              <input type="date" class="form-input" id="paymentDate" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="paymentMethod">Mode de règlement *</label>
+              <select class="form-select" id="paymentMethod" required>
+                <option value="">-- Choisir --</option>
+                <option value="cash">💵 Espèces / Guichet</option>
+                <option value="mobile_money">📱 Mobile Money (OM, Wave, Moov)</option>
+                <option value="bank_transfer">🏦 Virement bancaire</option>
+                <option value="cheque">📝 Chèque certifié</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="paymentRef">Référence transaction / N° reçu</label>
+            <input type="text" class="form-input" id="paymentRef" placeholder="Code de confirmation Wave/OM, etc." />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelPaymentBtn">Fermer</button>
+        <button class="btn btn-primary" id="savePaymentBtn">Valider le versement</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. TOAST -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- 6. CONFIRM DIALOG -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title" id="confirmTitle">Validation requise</h2>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage">Voulez-vous procéder ?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="confirmCancel">Non</button>
+        <button class="btn btn-danger" id="confirmOk">Oui, valider</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
